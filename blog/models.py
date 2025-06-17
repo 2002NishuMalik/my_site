@@ -20,7 +20,7 @@ class Author(models.Model):
 
 class Post(models.Model):  # Capitalized model name
     slug = models.SlugField(max_length=200, unique=True, db_index=True)
-    image = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='posts', null=True)
     date = models.DateField(auto_now=True)
     title = models.CharField(max_length=200)
     excerpt = models.TextField(max_length=300)
@@ -33,3 +33,9 @@ class Post(models.Model):  # Capitalized model name
 
     def get_tags(self):  # Added to display tags in admin
         return ", ".join([tag.caption for tag in self.tags.all()])
+class Comment(models.Model):
+    user_name = models.CharField(max_length=120)
+    user_email = models.EmailField()
+    text = models.TextField(max_length=400)
+    post = models.ForeignKey(
+        Post, on_delete=models.CASCADE, related_name="comments")
